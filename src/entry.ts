@@ -1,22 +1,48 @@
 import _Vue, { PluginFunction } from 'vue';
-
-// Import vue components
-import * as components from '@/lib-components/index';
+import { loadStripe } from "@stripe/stripe-js";
+import { validateStripe } from "@/utils/guards";
+import {
+  StripePluginOptions,
+  DollarStripe,
+  KeyStripePluginOptions,
+  InstanceStripePluginOptions
+} from "./types";
 
 // Define typescript interfaces for autoinstaller
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface InstallFunction extends PluginFunction<any> {
+interface InstallFunction extends PluginFunction<StripePluginOptions> {
   installed?: boolean;
 }
 
 // install function executed by Vue.use()
-const install: InstallFunction = function installVueStripeJs(Vue: typeof _Vue) {
+const install: InstallFunction = async function installVueStripeJs(Vue: typeof _Vue, options?: StripePluginOptions) {
   if (install.installed) return;
   install.installed = true;
-  Object.entries(components).forEach(([componentName, component]) => {
-    Vue.component(componentName, component);
+
+  if (
+    !options ||
+    (!(options as KeyStripePluginOptions).key &&
+      !(options as InstanceStripePluginOptions).stripe)
+  ) {
+    throw new Error(
+      "VueStripe needs either a key or a Stripe instance as an option"
+    );
+  }
+  const $stripe: DollarStripe = Vue.observable({
+    stripe: null,
+    elements: null
   });
-};
+  Vue.prototype.$stripe = $stripe;
+
+  const stripe = await validateStripe(
+    (options as InstanceStripePluginOptions).stripe ||
+      loadStripe((options as KeyStripePluginOptions).key as string)
+  );
+  if (stripe) {
+    $stripe.stripe = stripe;
+    $stripe.elements = stripe.elements(options.elementOptions);
+  }
+}
 
 // Create module definition for Vue.use()
 const plugin = {
