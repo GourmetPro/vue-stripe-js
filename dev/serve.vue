@@ -1,17 +1,31 @@
-<script lang="ts">
-import Vue from 'vue';
-import { VueStripeJsSample } from '@/entry';
-
-export default Vue.extend({
-  name: 'ServeDev',
-  components: {
-    VueStripeJsSample,
-  }
-});
-</script>
-
 <template>
-  <div id="app">
-    <vue-stripe-js-sample />
+  <div>
+    <card-element
+    v-if="$stripe.stripe"
+    @change="ccCompleted = $event.complete"
+    @ready="card = $event"/>
+
+    <button :disabled="!ccCompleted" @click="checkout">Checkout</button>
   </div>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import { CardElement } from "@/index";
+import { StripeCardElement } from '@stripe/stripe-js';
+
+@Component({
+  components: {
+    CardElement
+  }
+})
+export default class App extends Vue {
+  public ccCompleted = false;
+  public card: StripeCardElement | null = null;
+
+  public checkout() {
+    // Do something
+  }
+
+}
+</script>
