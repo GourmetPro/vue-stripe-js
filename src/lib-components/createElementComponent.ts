@@ -1,5 +1,5 @@
 import Vue, { PropType } from "vue";
-import { StripeElement, StripeElementType } from "@stripe/stripe-js";
+import { StripeElement, StripeElementType, StripeElements } from "@stripe/stripe-js";
 import { isUnknownObject } from "@/utils/guards";
 import { isEqual } from "@/utils/isEqual";
 import { ElementProps } from "@/types";
@@ -50,6 +50,7 @@ function createElementComponent<T extends ElementProps>(
     : Vue.extend({
         name,
         props: {
+          elements: { required: true, type: Object as PropType<StripeElements> },
           id: { required: false, type: String },
           className: { required: false, type: String },
           options: {
@@ -73,20 +74,8 @@ function createElementComponent<T extends ElementProps>(
           if (this.element) {
             return;
           }
-          if (!this.$stripe) {
-            throw new Error(
-              `Could not find Elements context; You need to install the plugin with Vue.use(StripeVue).`
-            );
-          }
 
-          const { elements } = this.$stripe;
-          if (!elements) {
-            throw new Error(
-              `Stripe was not loaded yet, please wait before loading`
-            );
-          }
-
-          const element = elements.create(type as any, this.options);
+          const element = this.elements.create(type as any, this.options);
           this.element = element;
 
           element.on("ready", () => this.$emit("ready", this.element));

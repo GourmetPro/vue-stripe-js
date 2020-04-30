@@ -14,6 +14,11 @@ interface InstallFunction extends PluginFunction<StripePluginOptions> {
   installed?: boolean;
 }
 
+export const $stripe: DollarStripe = _Vue.observable({
+  stripe: null,
+  elements: null
+});
+
 // install function executed by Vue.use()
 const install: InstallFunction = async function installVueStripeJs(Vue: typeof _Vue, options?: StripePluginOptions) {
   if (install.installed) return;
@@ -28,10 +33,7 @@ const install: InstallFunction = async function installVueStripeJs(Vue: typeof _
       "VueStripe needs either a key or a Stripe instance as an option"
     );
   }
-  const $stripe: DollarStripe = Vue.observable({
-    stripe: null,
-    elements: null
-  });
+
   Vue.prototype.$stripe = $stripe;
 
   const stripe = await validateStripe(
