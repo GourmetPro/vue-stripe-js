@@ -29,7 +29,9 @@
     "type": "git",
     "url": "https://github.com/GourmetPro/vue-stripe-js.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "vue-fragment": "^1.5.1"
+  },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
@@ -44,6 +46,7 @@
     "@wessberg/rollup-plugin-ts": "^1.2.24",
     "cross-env": "^7.0.2",
     "minimist": "^1.2.5",
+    "regenerator-runtime": "^0.13.5",
     "rollup": "^2.7.3",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-node-resolve": "^5.2.0",
@@ -51,6 +54,7 @@
     "rollup-plugin-vue": "^5.1.6",
     "typescript": "^3.8.3",
     "vue": "^2.6.11",
+    "vue-property-decorator": "^8.4.2",
     "vue-template-compiler": "^2.6.11"
   },
   "peerDependencies": {

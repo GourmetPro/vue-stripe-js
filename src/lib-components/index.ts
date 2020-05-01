@@ -1,4 +1,8 @@
 import createElementComponent from "./createElementComponent";
+import { AuBankAccountElementProps, CardElementProps, CardNumberElementProps, CardExpiryElementProps, CardCvcElementProps, FpxBankElementProps, IbanElementProps, IdealBankElementProps, PaymentRequestButtonElementProps } from '@/types';
+
+import Elements from "./Elements";
+export { Elements };
 
 const isServer = typeof window === "undefined";
 
@@ -8,7 +12,7 @@ const isServer = typeof window === "undefined";
  *
  * @docs https://stripe.com/docs/stripe-js/react#element-components
  */
-export const AuBankAccountElement = createElementComponent(
+export const AuBankAccountElement = createElementComponent<AuBankAccountElementProps>(
   "auBankAccount",
   isServer
 );
@@ -16,42 +20,42 @@ export const AuBankAccountElement = createElementComponent(
 /**
  * @docs https://stripe.com/docs/stripe-js/react#element-components
  */
-export const CardElement = createElementComponent("card", isServer);
+export const CardElement = createElementComponent<CardElementProps>("card", isServer);
 
 /**
  * @docs https://stripe.com/docs/stripe-js/react#element-components
  */
-export const CardNumberElement = createElementComponent("cardNumber", isServer);
+export const CardNumberElement = createElementComponent<CardNumberElementProps>("cardNumber", isServer);
 
 /**
  * @docs https://stripe.com/docs/stripe-js/react#element-components
  */
-export const CardExpiryElement = createElementComponent("cardExpiry", isServer);
+export const CardExpiryElement = createElementComponent<CardExpiryElementProps>("cardExpiry", isServer);
 
 /**
  * @docs https://stripe.com/docs/stripe-js/react#element-components
  */
-export const CardCvcElement = createElementComponent("cardCvc", isServer);
+export const CardCvcElement = createElementComponent<CardCvcElementProps>("cardCvc", isServer);
 
 /**
  * @docs https://stripe.com/docs/stripe-js/react#element-components
  */
-export const FpxBankElement = createElementComponent("fpxBank", isServer);
+export const FpxBankElement = createElementComponent<FpxBankElementProps>("fpxBank", isServer);
 
 /**
  * @docs https://stripe.com/docs/stripe-js/react#element-components
  */
-export const IbanElement = createElementComponent("iban", isServer);
+export const IbanElement = createElementComponent<IbanElementProps>("iban", isServer);
 
 /**
  * @docs https://stripe.com/docs/stripe-js/react#element-components
  */
-export const IdealBankElement = createElementComponent("idealBank", isServer);
+export const IdealBankElement = createElementComponent<IdealBankElementProps>("idealBank", isServer);
 
 /**
  * @docs https://stripe.com/docs/stripe-js/react#element-components
  */
-export const PaymentRequestButtonElement = createElementComponent(
+export const PaymentRequestButtonElement = createElementComponent<PaymentRequestButtonElementProps>(
   "paymentRequestButton",
   isServer
 );

@@ -3,6 +3,7 @@ import { StripeElement, StripeElementType, StripeElements } from "@stripe/stripe
 import { isUnknownObject } from "@/utils/guards";
 import { isEqual } from "@/utils/isEqual";
 import { ElementProps } from "@/types";
+import { DollarStripe, $stripe } from "./Elements";
 
 type UnknownOptions = { [k: string]: unknown };
 
@@ -26,18 +27,18 @@ function createElementComponent<T extends ElementProps>(
 
   const Element = isServer
     ? Vue.extend({
-        name,
-        props: {
-          id: { required: false, type: String },
-          className: { required: false, type: String },
-          options: {
-            required: false,
-            type: Object as PropType<T>,
-            default: () => {
-              return {};
-            }
+      name,
+      props: {
+        id: { required: false, type: String },
+        className: { required: false, type: String },
+        options: {
+          required: false,
+          type: Object as PropType<T>,
+          default: () => {
+            return {};
           }
-        },
+        }
+      },
         render(h) {
           return h("div", {
             attrs: {
@@ -64,15 +65,29 @@ function createElementComponent<T extends ElementProps>(
         data() {
           return {
             element: null,
-            domNode: null
+            domNode: null,
+            stripe: $stripe,
           } as {
             element: StripeElement | null;
             domNode: HTMLDivElement | null;
+            stripe: DollarStripe;
           };
+        },
+        inject: {
+          stripe: {
+            default: null
+          }
         },
         beforeMount() {
           if (this.element) {
             return;
+          }
+
+          const { elements } = this.stripe;
+          if (!elements) {
+            throw new Error(
+              `Stripe was not loaded yet, please wait before loading`
+            );
           }
 
           const element = this.elements.create(type as any, this.options);

@@ -1,27 +1,5 @@
 import * as stripeJs from "@stripe/stripe-js";
 
-export interface KeyStripePluginOptions {
-  kind: "key";
-  key: string;
-}
-
-export interface InstanceStripePluginOptions {
-  kind: "instance";
-  stripe: stripeJs.Stripe | null | Promise<stripeJs.Stripe | null>;
-}
-
-export type StripePluginOptions = (
-  | KeyStripePluginOptions
-  | InstanceStripePluginOptions
-) & {
-  elementOptions?: stripeJs.StripeElementsOptions;
-};
-
-export interface DollarStripe {
-  stripe: stripeJs.Stripe | null;
-  elements: stripeJs.StripeElements | null;
-}
-
 export interface ElementProps {
   /**
    * Passes through to the [Element’s container](https://stripe.com/docs/js/element/the_element_container).
