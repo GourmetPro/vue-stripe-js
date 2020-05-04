@@ -2,8 +2,8 @@ import Vue, { PropType } from "vue";
 import type { Stripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { makeDollarStripe, i$stripe } from "@/utils/dollarStripe";
 
-export default Vue.extend({
-  name,
+export const Elements = Vue.extend({
+  name: 'Elements',
   props: {
     stripe: {
       required: true,
@@ -21,6 +21,34 @@ export default Vue.extend({
   },
   render(h) {
     // TODO use vue fragments
-    return h('div', this.$scopedSlots?.default?.({}));
+    const defaultSlotChildren = this.$scopedSlots?.default?.({})
+    if(defaultSlotChildren && defaultSlotChildren.length === 1) {
+      return defaultSlotChildren[0];
+    }
+    else{
+      return h('div', defaultSlotChildren);
+    }
+  }
+})
+
+export const ElementsConsumer = Vue.extend({
+  name: 'ElementsConsumer',
+  inject: {
+    [i$stripe]: {
+      default: null
+    }
+  },
+  render(h) {
+    // TODO use vue fragments
+    const defaultSlotChildren = this.$scopedSlots?.default?.({
+      stripe: (this as any).i$stripe?.stripe,
+      elements: (this as any).i$stripe?.elements
+    })
+    if(defaultSlotChildren && defaultSlotChildren.length === 1) {
+      return defaultSlotChildren[0];
+    }
+    else{
+      return h('div', defaultSlotChildren);
+    }
   }
 })

@@ -13,6 +13,8 @@ export interface VueStripe {
 }
 
 export interface DollarStripe extends VueStripe {
+  stripe: stripeJs.Stripe | null;
+  elements: stripeJs.StripeElements | null;
   promise: Promise<VueStripe | null>
 }
 

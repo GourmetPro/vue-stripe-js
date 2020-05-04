@@ -12,19 +12,20 @@ First, install Vue Stripe.js and
 npm install @gourmetpro/vue-stripe-js @stripe/stripe-js
 ```
 
-Install the plugin in your `main`
-```ts
+#### Using plugin
+
+Install the plugin in your `src/main.js`
+```js
 import Vue from "vue";
 import App from "./App.vue";
 import { loadStripe } from "@stripe/stripe-js";
 import VueStripe from "@gourmetpro/vue-stripe-js";
 
 const stripePromise = loadStripe('pk_test_xxxxxxxxx');
-
 Vue.use(VueStripe, { stripe: stripePromise });
 
 new Vue({
-  render: (h): VNode => h(App),
+  render: (h) => h(App),
 }).$mount('#app');
 ```
 
@@ -32,9 +33,8 @@ Then in one of your components
 ```vue
 <template>
   <div>
-   <card-element
+    <card-element
       v-if="$stripe.elements"
-      :elements="$stripe.elements"
       @change="ccCompleted = $event.complete"
       @ready="card = $event"
     >
@@ -43,55 +43,104 @@ Then in one of your components
 </template>
 
 <script>
-import { Component, Vue } from "vue-property-decorator";
-
 import { CardElement } from "@gourmetpro/vue-stripe-js";
-import { StripeCardElement } from "@stripe/stripe-js";
 
-@Component({
-  components: { CardElement }
-})
-export default class Checkout extends Vue {
-
-  public clientSecret!: Promise<string>;
-  public card: StripeCardElement | null = null;
-  public ccCompleted = false;
-
-  public async created() {
-    this.clientSecret = fetch("https://my-intent-endpoint");// Fetch a payment or setup intent
-  }
-
-  public async payByCard() {
-    const clientSecret = await this.clientSecret;
-
-    try {
-      const { intent, error } = await this.stripe.stripe.confirmCardSetup(
-        clientSecret,
-        {
-          payment_method: {
-            card: card,
-            billing_details: {
-              name: "Test"
-            }
-          }
-        }
-      );
-      if(error) {
-        // Something went wrong
-        console.log("Error at confirmation", error);
+export default {
+  components: { CardElement },
+  data() {
+    return {
+      ccCompleted: false,
+      card:  null;
+    }
+  },
+  methods: {
+    async submit() {
+      if (!this.$stripe.stripe || !this.card) {
+        return;
       }
-      else {
-        // Success !!
-        console.log("Confirmed intent", intent);
-      }
-    } catch (error) {
-      // Somehow something really wrong happend
-      console.log("Stripe confirm setup error", error);
+      const {
+        error,
+        paymentMethod
+      } = await this.$stripe.stripe.createPaymentMethod({
+        type: "card",
+        card: this.card
+      });
     }
   }
 }
 </script>
 ```
+
+#### Using slot props
+
+In parent component (e.g. `src/App.vue`)
+
+```vue
+<template>
+  <elements :stripe="stripePromise">
+    <checkout-form />
+  </elements>
+</template>
+
+<script>
+import { Elements } from "@gourmetpro/vue-stripe-js";
+import CheckoutForm from "@/components/CheckoutForm.vue";
+
+export default {
+  components: {
+    Elements,
+    CheckoutForm,
+  },
+  data() {
+    return {
+      stripePromise: loadStripe("pk_test_xxxxxxxxx");
+    }
+  }
+}
+</script>
+```
+
+In child component (e.g. `src/components/CheckoutForm.vue`)
+```vue
+<template>
+  <elements-consumer>
+    <template v-slot="{stripe, elements}">
+      <card-element
+        v-if="elements"
+        @change="ccCompleted = $event.complete"
+        @ready="card = $event" />
+      <button @click.prevent="submit(stripe)" :disabled="!stripe || !ccCompleted">Pay</button>
+    </template>
+  </elements-consumer>
+</template>
+
+<script>
+import { CardElement, ElementsConsumer } from "@gourmetpro/vue-stripe-js";
+
+export default {
+  components: { CardElement, ElementsConsumer },
+  data() {
+    return {
+      ccCompleted: false,
+      card:  null;
+    }
+  },
+  methods: {
+    async submit(stripe) {
+      if (!this.card) {
+        return;
+      }
+
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: this.card
+      });
+    }
+  }
+}
+</script>
+```
+
 
 ### Minimum requirements
 

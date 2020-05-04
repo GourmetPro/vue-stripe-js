@@ -1,6 +1,6 @@
 {
   "name": "@gourmetpro/vue-stripe-js",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Vue components for Stripe.js and Stripe Elements",
   "main": "dist/vue-stripe-js.ssr.js",
   "browser": "dist/vue-stripe-js.esm.js",

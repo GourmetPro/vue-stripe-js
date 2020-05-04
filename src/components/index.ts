@@ -1,7 +1,6 @@
 import createElementComponent from "./createElementComponent";
-import Elements from "./Elements";
 
-export { Elements };
+export { Elements, ElementsConsumer } from "./Elements";
 
 const isServer = typeof window === "undefined";
 

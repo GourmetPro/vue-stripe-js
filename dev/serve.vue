@@ -1,31 +1,31 @@
 <template>
   <div>
-    <card-element
-    v-if="$stripe.stripe"
-    @change="ccCompleted = $event.complete"
-    @ready="card = $event"/>
+    <h1>PluginForm</h1>
+    <plugin-form />
 
-    <button :disabled="!ccCompleted" @click="checkout">Checkout</button>
+    <h1>ConsumerForm</h1>
+    <elements :stripe="stripePromise">
+      <consumer-form />
+    </elements>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { CardElement } from "@/index";
-import { StripeCardElement } from '@stripe/stripe-js';
+import { Elements } from "@/index";
+import { loadStripe } from "@stripe/stripe-js";
+import ConsumerForm from "./ConsumerForm.vue";
+import PluginForm from "./PluginForm.vue"
+
 
 @Component({
   components: {
-    CardElement
+    Elements,
+    ConsumerForm,
+    PluginForm,
   }
 })
 export default class App extends Vue {
-  public ccCompleted = false;
-  public card: StripeCardElement | null = null;
-
-  public checkout() {
-    // Do something
-  }
-
+  stripePromise = loadStripe("pk_test_xxxxxxxxx");
 }
 </script>
